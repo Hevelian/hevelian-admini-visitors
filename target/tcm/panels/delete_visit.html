@@ -1,0 +1,42 @@
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+      	<script>
+      		function deleteVisit() {
+
+      			var ajax = new AJAX();
+      			var _url = "api/visit.svc/delete?";
+      			
+      			_url += "id=" + _visitSelectedRow.id;
+      			
+      			ajax.GetNowAsText("GET", _url);
+      			
+      			loadContacts();
+      			loadVisits();
+      			initCalculator();
+      			
+      			$("#btnEditVisit").addClass("disabled");
+      			$("#btnDeleteVisit").addClass("disabled");
+
+      			$('#modalPanel').modal('hide');
+      		}
+      	</script>
+      	<h4>Delete Visit</h4>
+      	<form method="POST" action="javascript:deleteVisit()" role="form" data-toggle="validator" id="tenant_form">
+
+			<p style="text-decoration: underline;">You Really Want to Delete visit <span id="frm_visit"></span>?</p>
+			<p>This CANNOT be undone!</p>
+			<br/>
+			<br/>
+			<button type="submit" class="btn btn-default btn-sm pull-right">Yes, Delete This Visit</button>
+			<button type="button" onclick="$('#modalPanel').modal('hide')" class="btn btn-danger btn-sm pull-right" style="margin-right: 4px;">Cancel</button>
+			<br/>
+			<br/>
+			
+		</form>
+      </div>
+  </div>
+  <script>
+  	$('#tenant_form').validator('update');
+  </script>
+ </div>

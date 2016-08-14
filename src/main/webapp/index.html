@@ -1,0 +1,440 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>TuZi Administration</title>
+<link rel="stylesheet" href="scripts/bootstrap/css/bootstrap.min.css" />
+<link rel="stylesheet"
+	href="scripts/bootstrap/css/bootstrap-theme.min.css" />
+<link rel="stylesheet"
+	href="scripts/select/css/bootstrap-select.min.css" />
+<link rel="stylesheet" href="scripts/dates/bootstrap-datetimepicker.css" />
+<link rel="stylesheet" href="css/tcm.css" />
+
+<script src="scripts/jquery/jquery-1.11.2.min.js"></script>
+<script src="scripts/bootstrap/js/bootstrap.min.js"></script>
+<script src="scripts/select/js/bootstrap-select.min.js"></script>
+<script src="scripts/dates/moment.js"></script>
+<script src="scripts/dates/bootstrap-datetimepicker.min.js"></script>
+<script src="scripts/chartjs/Chart.js"></script>
+
+<script src="scripts/validator.js"></script>
+<script src="scripts/ajax.js"></script>
+<script src="scripts/tcm.js"></script>
+<script src="scripts/calc.js"></script>
+</head>
+
+<body id="main"
+	onLoad="loadContacts(); fetchVisitYears(); loadVisits(); initCalculator();">
+	<div class="container">
+
+		<!-- Static navbar -->
+		<nav class="navbar navbar-default navbar-fixed-top">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed"
+					data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+					aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span> <span
+						class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#">TuZi Administration</a>
+			</div>
+			<div id="navbar" class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					<li id="nav_contacts" class="active"><a
+						href="javascript:NavSwitcher('contacts')">Contacts</a></li>
+					<li id="nav_visits"><a href="javascript:NavSwitcher('visits')">Visits</a></li>
+					<li id="nav_calculator"><a
+						href="javascript:NavSwitcher('calculator')">Calculator</a></li>
+				</ul>
+			</div>
+		</div>
+		</nav>
+
+		<div id="container_contacts" class="container"
+			style="display: inline-block; width: 100%;">
+			<br /> <br /> <br /> <br />
+			<button type="button" class="btn btn-warning btn-md"
+				style="margin-bottom: 4px;"
+				onClick="_handlerClickAddContactButton()">New Contact</button>
+			<button id="btnEditContact" type="button" style="margin-bottom: 4px;"
+				class="btn btn-warning btn-md disabled"
+				onClick="contactEditContact()">Edit Contact</button>
+			<button id="btnDeleteContact" type="button"
+				style="margin-bottom: 4px;" class="btn btn-warning btn-md disabled"
+				onClick="contactDeleteContact()">Delete Contact</button>
+			<div class="panel panel-primary">
+				<div class="panel-heading">
+
+					<div class="row">
+						<div class="col-sm-8">
+							<h3 class="panel-title padFix">
+								Contacts <span id="contactCount" class="badge">0</span>
+							</h3>
+						</div>
+						<div class="col-sm-4">
+							<form role="search" method="get"
+								action="javascript:contactSearch()">
+								<div class="input-group">
+									<input id="contactSearchCriteria" type="text" name="criteria"
+										class="form-control input-sm" value=""
+										placeholder="Enter search criteria">
+									<div class="input-group-btn">
+										<button class="btn btn-md btn-success">
+											<i class="glyphicon glyphicon-search"></i>
+										</button>
+									</div>
+								</div>
+							</form>
+
+						</div>
+					</div>
+
+				</div>
+				<div class="panel-body" style="padding-top: 0px;">
+					<div class="row">
+						<div class="col-sm-12">
+							<table class="table table-striped table-condensed table-hover">
+								<thead>
+									<tr>
+										<th>id</th>
+										<th>Firstname</th>
+										<th>Lastname</th>
+										<th>Email</th>
+										<th>Tel. Home</th>
+										<th>Tel. Mobile</th>
+										<th>Street</th>
+										<th>House</th>
+										<th>City</th>
+										<th>Postcode</th>
+									</tr>
+								</thead>
+								<tbody id="tbodyContacts">
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<div id="container_visits" style="display: none; width: 100%;">
+			<br /> <br /> <br /> <br />
+
+			<div class="row">
+				<div class="col-sm-6">
+					<button type="button" class="btn btn-warning btn-md"
+						onClick="_handlerClickAddVisitButton()">New Visit</button>
+					<button id="btnVisitInvoice" type="button"
+						class="btn btn-warning btn-md disabled" onClick="showInvoice()">Print
+						Invoice</button>
+					<button id="btnEditVisit" type="button"
+						class="btn btn-warning btn-md disabled" onClick="visitEditVisit()">Edit
+						Visit</button>
+					<button id="btnDeleteVisit" type="button"
+						class="btn btn-warning btn-md disabled"
+						onClick="visitDeleteVisit()">Delete Visit</button>
+				</div>
+				<div class="col-sm-6" style="text-align: right">
+					<button type="button" class="btn btn-normal btn-md">Group
+						By:</button>
+					<select class="selectpicker form-control show-tick"
+						id="visitGroupBy" onChange="loadVisits()" data-width="100px"
+						data-style="btn-success">
+						<option value="none">none</option>
+						<option value="name">Person</option>
+						<option value="month">Month</option>
+					</select>
+					<button type="button" class="btn btn-normal btn-md">Filter
+						By:</button>
+					<select id="visitFilterYear"
+						class="selectpicker form-control show-tick" data-width="100px"
+						data-style="btn-success" onChange="loadVisits()">
+					</select> <select id="visitFilterDetail"
+						class="selectpicker form-control show-tick" data-width="150px"
+						data-style="btn-success" onChange="loadVisits()">
+						<option value="this_week">this week</option>
+						<option value="this_month">this month</option>
+						<option value="this_quarter">this quarter</option>
+						<option value="entire_year">entire year</option>
+						<optgroup label="quarters">
+							<option value="q1">Jan - Mar</option>
+							<option value="q2">Apr - Jun</option>
+							<option value="q3">Jul - Sep</option>
+							<option value="q4">Oct - Dec</option>
+						</optgroup>
+						<optgroup label="semi-year">
+							<option value="h1">Jan - Jun</option>
+							<option value="h2">Jul - Dec</option>
+						</optgroup>
+					</select>
+				</div>
+			</div>
+
+			<div class="panel panel-primary" style="margin-top: 4px;">
+				<div class="panel-heading">
+
+					<div class="row">
+						<div class="col-sm-8">
+							<h3 class="panel-title padFix">
+								Visits <span id="visitCount" class="badge">0</span>
+							</h3>
+						</div>
+						<div class="col-sm-4">
+							<form role="search" method="get"
+								action="javascript:visitSearch()">
+								<div class="input-group">
+									<input id="visitSearchCriteria" type="text" name="criteria"
+										class="form-control input-sm" value=""
+										placeholder="Enter search criteria">
+									<div class="input-group-btn">
+										<button class="btn btn-md btn-success">
+											<i class="glyphicon glyphicon-search"></i>
+										</button>
+									</div>
+								</div>
+							</form>
+
+						</div>
+					</div>
+
+				</div>
+
+				<div id="visitMasterPanel" class="panel-body"
+					style="padding-top: 0px;">
+					<div class="row" id="visitRowNone">
+						<div class="col-sm-12">
+							<table class="table table-striped table-condensed table-hover">
+								<thead>
+									<tr>
+										<th>&nbsp;</th>
+										<th>invoice</th>
+										<th>Date</th>
+										<th>Firstname</th>
+										<th>Lastname</th>
+										<th>Email</th>
+										<th>Tel. Home</th>
+										<th>Tel. Mobile</th>
+										<th style="text-align: right">Amount</th>
+										<th style="text-align: right">Paid?</th>
+									</tr>
+								</thead>
+								<tbody id="tbodyVisitsNone">
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<div id="container_calculator" style="display: none; width: 100%;">
+			<br /> <br /> <br /> <br />
+			<div class="row">
+				<div class="col-sm-6 calcHeader">
+					<span>Statistics for <span id="calcHeaderYear">0000</span></span>
+				</div>
+				<div class="col-sm-6" style="border-bottom: 1px solid #a0a0a0; margin-bottom: 40px; padding-bottom: 4px; text-align: right">
+					<button type="button" class="btn btn-normal btn-md">Select Year:</button>
+				
+					<select id="calcFilterYear"
+						class="selectpicker form-control show-tick" data-width="100px"
+						data-style="btn-success" onChange="initCalculator()">
+					</select>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-4">
+					<div class="panel panel-primary">
+						<div class="panel-heading">Visitors Year To Date</div>
+						<div class="panel-body">
+							<table class="table table-condensed">
+								<tbody>
+									<tr>
+										<td>Total Visits</td>
+										<td style="text-align: right;"><span id="calcYTD_TotalVisits">0</span></td>
+									</tr>
+									<tr>
+										<td>Total Unique Visitors</td>
+										<td style="text-align: right;"><span id="calcYTD_TotalVisitors">0</span></td>
+									</tr>
+									<tr>
+										<td>Average Visits per Visitor</td>
+										<td style="text-align: right;"><span id="calcYTD_AverageVisitsPerVisitor">0</span></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-4">
+					<div class="panel panel-primary">
+						<div class="panel-heading">Revenue Year To Date</div>
+						<div class="panel-body">
+							<table class="table table-condensed">
+								<tbody>
+									<tr>
+										<td>Total Revenue</td>
+										<td style="text-align: right;">&euro; <span id="calcYTD_TotalRevenue">0</span></td>
+									</tr>
+									<tr>
+										<td>Average Revenue per Visit</td>
+										<td style="text-align: right;">&euro; <span id="calcYTD_AveragePerVisit">0</span></td>
+									</tr>
+									<tr>
+										<td>Average Revenue per Visitor</td>
+										<td style="text-align: right;">&euro; <span id="calcYTD_AveragePerVisitor">0</span></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-4">
+					<div class="panel panel-primary">
+						<div class="panel-heading">BTW Year To Date</div>
+						<div class="panel-body">
+							<table class="table table-condensed">
+								<tbody>
+									<tr>
+										<td>Total BTW</td>
+										<td style="text-align: right;">&euro; <span id="calcYTD_TotalBTW">0</span></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col-sm-3">
+					<div class="panel panel-primary">
+						<div class="panel-heading">Q1</div>
+						<div class="panel-body">
+							<table class="table table-condensed">
+								<tbody>
+									<tr>
+										<td>Total Visits</td>
+										<td style="text-align: right;"><span id="calcQ1_visits">0</span></td>
+									</tr>
+									<tr>
+										<td>Total Unique Visitors</td>
+										<td style="text-align: right;"><span id="calcQ1_visitors">0</span></td>
+									</tr>
+									<tr>
+										<td>Total Revenue</td>
+										<td style="text-align: right;">&euro; <span id="calcQ1_revenue">0</span></td>
+									</tr>
+									<tr>
+										<td>Total BTW</td>
+										<td style="text-align: right;">&euro; <span id="calcQ1_BTW">0</span></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-3">
+					<div class="panel panel-primary">
+						<div class="panel-heading">Q2</div>
+						<div class="panel-body">
+							<table class="table table-condensed">
+								<tbody>
+									<tr>
+										<td>Total Visits</td>
+										<td style="text-align: right;"><span id="calcQ2_visits">0</span></td>
+									</tr>
+									<tr>
+										<td>Total Unique Visitors</td>
+										<td style="text-align: right;"><span id="calcQ2_visitors">0</span></td>
+									</tr>
+									<tr>
+										<td>Total Revenue</td>
+										<td style="text-align: right;">&euro; <span id="calcQ2_revenue">0</span></td>
+									</tr>
+									<tr>
+										<td>Total BTW</td>
+										<td style="text-align: right;">&euro; <span id="calcQ2_BTW">0</span></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-3">
+					<div class="panel panel-primary">
+						<div class="panel-heading">Q3</div>
+						<div class="panel-body">
+							<table class="table table-condensed">
+								<tbody>
+									<tr>
+										<td>Total Visits</td>
+										<td style="text-align: right;"><span id="calcQ3_visits">0</span></td>
+									</tr>
+									<tr>
+										<td>Total Unique Visitors</td>
+										<td style="text-align: right;"><span id="calcQ3_visitors">0</span></td>
+									</tr>
+									<tr>
+										<td>Total Revenue</td>
+										<td style="text-align: right;">&euro; <span id="calcQ3_revenue">0</span></td>
+									</tr>
+									<tr>
+										<td>Total BTW</td>
+										<td style="text-align: right;">&euro; <span id="calcQ3_BTW">0</span></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-3">
+					<div class="panel panel-primary">
+						<div class="panel-heading">Q4</div>
+						<div class="panel-body">
+							<table class="table table-condensed">
+								<tbody>
+									<tr>
+										<td>Total Visits</td>
+										<td style="text-align: right;"><span id="calcQ4_visits">0</span></td>
+									</tr>
+									<tr>
+										<td>Total Unique Visitors</td>
+										<td style="text-align: right;"><span id="calcQ4_visitors">0</span></td>
+									</tr>
+									<tr>
+										<td>Total Revenue</td>
+										<td style="text-align: right;">&euro; <span id="calcQ4_revenue">0</span></td>
+									</tr>
+									<tr>
+										<td>Total BTW</td>
+										<td style="text-align: right;">&euro; <span id="calcQ4_BTW">0</span></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<canvas id="chartByMonth" style="padding-top: 40px;"></canvas>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col-sm-12">
+					<br/><br/>
+					<br/><br/>
+					<br/><br/>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,163 @@
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+      	<script>
+      		function saveContact() {
+      			var firstname 		= encodeURIComponent(document.getElementById('frm_firstname').value);
+      			var lastname 		= encodeURIComponent(document.getElementById('frm_lastname').value);
+      			var email 			= encodeURIComponent(document.getElementById('frm_email').value);
+
+      			var tel_home 			= encodeURIComponent(document.getElementById('frm_tel_home').value);
+      			var tel_mobile 			= encodeURIComponent(document.getElementById('frm_tel_mobile').value);
+      			var streetname 			= encodeURIComponent(document.getElementById('frm_streetname').value);
+      			var housenumber 		= encodeURIComponent(document.getElementById('frm_housenumber').value);
+      			var city 				= encodeURIComponent(document.getElementById('frm_city').value);
+      			var postcode 			= encodeURIComponent(document.getElementById('frm_postcode').value);
+      			
+      			var ajax = new AJAX();
+      			var _url = "api/contact.svc/save?";
+      			_url += "firstname=" + firstname;
+      			if(lastname!=null&&lastname!="") { _url += "&lastname=" + lastname; }
+      			if(email!=null&&email!="") {_url += "&email=" + email; }
+      			
+      			if(tel_home!=null&&tel_home!="") {_url += "&tel_home=" + tel_home; }
+      			if(tel_mobile!=null&&tel_mobile!="") {_url += "&tel_mobile=" + tel_mobile; }
+      			if(streetname!=null&&streetname!="") {_url += "&streetname=" + streetname; }
+      			if(housenumber!=null&&housenumber!="") {_url += "&housenumber=" + housenumber; }
+      			if(city!=null&&city!="") {_url += "&city=" + city; }
+      			if(postcode!=null&&postcode!="") {_url += "&postcode=" + postcode; }
+      			
+      			_url += "&contact_id=" + _contactSelectedRow.id.split('_')[1];
+      			
+      			ajax.GetNowAsText("GET", _url);
+      			
+      			loadContacts();
+      			loadVisits();
+      			
+      			$("#btnEditContact").addClass("disabled");
+      			$("#btnDeleteContact").addClass("disabled");
+
+      			$('#modalPanel').modal('hide');
+      		}
+      	</script>
+      	<h4>Edit Contact</h4>
+      	<form method="POST" action="javascript:saveContact()" role="form" data-toggle="validator" id="tenant_form">
+
+			<div class="form-group row has-feedback">
+				<div class="col-sm-6">
+					<div class="input-group">
+						<input type="text" class="form-control form-control-sm" id="frm_firstname"
+							placeholder="first name" required="true" data-minlength="1"/>
+						<div class="input-group-addon">&nbsp;<span class="glyphicon form-control-feedback" aria-hidden="true"></span></div>
+						
+					</div>
+				</div>
+				<label for="frm_name" class="col-sm-6 form-control-label">person first name</label>
+			</div>
+
+			<div class="form-group row has-feedback">
+				<div class="col-sm-6">
+					<div class="input-group">
+						<input type="text" class="form-control form-control-sm" id="frm_lastname"
+							placeholder="last name"/>
+						<div class="input-group-addon">&nbsp;<span class="glyphicon form-control-feedback" aria-hidden="true"></span></div>
+						
+					</div>
+				</div>
+				<label for="frm_name" class="col-sm-6 form-control-label">person last name</label>
+			</div>
+
+			<p style="text-decoration: underline;">Contact Details</p>
+
+			<div class="form-group row has-feedback">
+				<div class="col-sm-6">
+					<div class="input-group">
+						<input type="text" class="form-control form-control-sm" id="frm_tel_home"
+							placeholder="home telephone number"/>
+						<div class="input-group-addon">&nbsp;<span class="glyphicon form-control-feedback" aria-hidden="true"></span></div>
+					</div>
+				</div>
+				<label for="frm_username" class="col-sm-6 form-control-label">home telephone number</label>
+			</div>
+
+			<div class="form-group row has-feedback">
+				<div class="col-sm-6">
+					<div class="input-group">
+						<input type="text" class="form-control form-control-sm" id="frm_tel_mobile"
+							placeholder="mobile telephone number"/>
+						<div class="input-group-addon">&nbsp;<span class="glyphicon form-control-feedback" aria-hidden="true"></span></div>
+					</div>
+				</div>
+				<label for="frm_username" class="col-sm-6 form-control-label">mobile telephone number</label>
+			</div>
+			
+			<div class="form-group row has-feedback">
+				<div class="col-sm-6">
+					<div class="input-group">
+						<input type="email" class="form-control form-control-sm" id="frm_email"
+							placeholder="email address"/>
+						<div class="input-group-addon">&nbsp;<span class="glyphicon form-control-feedback" aria-hidden="true"></span></div>
+					</div>
+				</div>
+				<label for="frm_username" class="col-sm-6 form-control-label">email address</label>
+			</div>
+
+			<p style="text-decoration: underline;">Address</p>
+
+			<div class="form-group row has-feedback">
+				<div class="col-sm-6">
+					<div class="input-group">
+						<input type="text" class="form-control form-control-sm" id="frm_streetname"
+							placeholder="street name" required="true" data-minlength="1"/>
+						<div class="input-group-addon">&nbsp;<span class="glyphicon form-control-feedback" aria-hidden="true"></span></div>
+					</div>
+				</div>
+				<label for="frm_username" class="col-sm-6 form-control-label">street name</label>
+			</div>
+
+			<div class="form-group row has-feedback">
+				<div class="col-sm-6">
+					<div class="input-group">
+						<input type="text" class="form-control form-control-sm" id="frm_housenumber"
+							placeholder="house number" required="true" data-minlength="1"/>
+						<div class="input-group-addon">&nbsp;<span class="glyphicon form-control-feedback" aria-hidden="true"></span></div>
+					</div>
+				</div>
+				<label for="frm_username" class="col-sm-6 form-control-label">house number</label>
+			</div>
+
+			<div class="form-group row has-feedback">
+				<div class="col-sm-6">
+					<div class="input-group">
+						<input type="text" class="form-control form-control-sm" id="frm_postcode"
+							placeholder="postcode" required="true" data-minlength="6"/>
+						<div class="input-group-addon">&nbsp;<span class="glyphicon form-control-feedback" aria-hidden="true"></span></div>
+					</div>
+				</div>
+				<label for="frm_username" class="col-sm-6 form-control-label">postcode</label>
+			</div>
+
+			<div class="form-group row has-feedback">
+				<div class="col-sm-6">
+					<div class="input-group">
+						<input type="text" class="form-control form-control-sm" id="frm_city"
+							placeholder="city name" required="false" data-minlength="1"/>
+						<div class="input-group-addon">&nbsp;<span class="glyphicon form-control-feedback" aria-hidden="true"></span></div>
+					</div>
+				</div>
+				<label for="frm_username" class="col-sm-6 form-control-label">city name</label>
+			</div>
+
+			<br/>
+			<button type="submit" class="btn btn-default btn-sm pull-right">Save Contact</button>
+			<button type="button" onclick="$('#modalPanel').modal('hide')" class="btn btn-danger btn-sm pull-right" style="margin-right: 4px;">Cancel</button>
+			<br/>
+			<br/>
+			
+		</form>
+      </div>
+  </div>
+  <script>
+  	$('#tenant_form').validator('update');
+  </script>
+ </div>

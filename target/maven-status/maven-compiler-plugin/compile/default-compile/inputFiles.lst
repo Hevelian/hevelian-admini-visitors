@@ -1,0 +1,10 @@
+/Users/cb/Documents/workspace_hevelian/tcm/src/main/java/com/hevelian/tcm/database/Configuration.java
+/Users/cb/Documents/workspace_hevelian/tcm/src/main/java/com/hevelian/tcm/service/VisitService.java
+/Users/cb/Documents/workspace_hevelian/tcm/src/main/java/com/hevelian/tcm/model/Visit.java
+/Users/cb/Documents/workspace_hevelian/tcm/src/main/java/com/hevelian/tcm/api/ContactController.java
+/Users/cb/Documents/workspace_hevelian/tcm/src/main/java/com/hevelian/tcm/service/ContactService.java
+/Users/cb/Documents/workspace_hevelian/tcm/src/main/java/com/hevelian/tcm/database/ContactStore.java
+/Users/cb/Documents/workspace_hevelian/tcm/src/main/java/com/hevelian/tcm/database/VisitStore.java
+/Users/cb/Documents/workspace_hevelian/tcm/src/main/java/com/hevelian/tcm/model/Contact.java
+/Users/cb/Documents/workspace_hevelian/tcm/src/main/java/com/hevelian/tcm/model/VisitContact.java
+/Users/cb/Documents/workspace_hevelian/tcm/src/main/java/com/hevelian/tcm/api/VisitController.java
