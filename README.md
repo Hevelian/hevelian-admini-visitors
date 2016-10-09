@@ -1,5 +1,4 @@
-# hevelian-tcm
+# hevelian-admini-visitors
 
-Traditional Chinese Medicine
-
-A simple administraion application for managing customers and treatment visits.
+Visitor logging application. To be used with Hevelian Admini or standalone for simple visitor logging.
+Includes a simple invoice generator and sales tax calculator.
